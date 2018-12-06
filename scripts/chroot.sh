@@ -423,7 +423,10 @@ if [ "x${repo_rcnee}" = "xenable" ] ; then
 	echo "deb [arch=armhf] http://repos.rcn-ee.com/${deb_distribution}/ ${deb_codename} main" >> ${wfile}
 	echo "#deb-src [arch=armhf] http://repos.rcn-ee.com/${deb_distribution}/ ${deb_codename} main" >> ${wfile}
 
+	echo "deb http://192.168.4.48/aptly_root/public/bbg_test/ stretch main" >> ${wfile}
+
 	sudo cp -v "${OIB_DIR}/target/keyring/repos.rcn-ee.net-archive-keyring.asc" "${tempdir}/tmp/repos.rcn-ee.net-archive-keyring.asc"
+	sudo cp -v "${OIB_DIR}/target/keyring/bbg_test_local.key" "${tempdir}/tmp/bbg_test_local.key"
 fi
 
 if [ "x${repo_ros}" = "xenable" ] ; then
@@ -571,7 +574,9 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 		fi
 		if [ "x${repo_rcnee}" = "xenable" ] ; then
 			apt-key add /tmp/repos.rcn-ee.net-archive-keyring.asc
+			apt-key add /tmp/bbg_test_local.key
 			rm -f /tmp/repos.rcn-ee.net-archive-keyring.asc || true
+			rm -f /tmp/bbg_test_local.key || true
 		fi
 		if [ "x${repo_ros}" = "xenable" ] ; then
 			apt-key add /tmp/ros-archive-keyring.asc
@@ -951,6 +956,48 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 
 		fi
 	}
+	read_only_fs () {
+		if [ -f /etc/fstab ] ; then
+			echo "------------------------/etc/fstab---------------------------"
+			echo "# UNCONFIGURED FSTAB FOR BASE SYSTEM" > /etc/fstab
+			echo "/dev/mmcblk0p1 /mnt/stateful_partition ext4 defaults 0 2" >> /etc/fstab
+			echo "/mnt/stateful_partition/home /home none defaults,bind 0 0" >> /etc/fstab
+			echo "/mnt/stateful_partition/var /var none defaults,bind 0 0" >> /etc/fstab
+			echo "/mnt/stateful_partition/local /usr/local none defaults,bind 0 0" >> /etc/fstab
+			echo "/mnt/stateful_partition/ssh /etc/ssh none defaults,bind 0 0" >> /etc/fstab
+		fi
+		if [ -f /usr/share/systemd/tmp.mount ] ; then
+			echo "------------------------tmp.mount---------------------------"
+			cp /usr/share/systemd/tmp.mount  /lib/systemd/system/tmp.mount
+			systemctl enable tmp.mount
+		fi
+
+		cd /etc && ln -s ../proc/self/mounts mtab
+		mkdir -p /mnt/stateful_partition/home
+		mkdir -p /mnt/stateful_partition/var
+		mkdir -p /mnt/stateful_partition/local
+		mkdir -p /var/lib/update_engine
+		mkdir -p /var/lib/metrics
+
+		echo "SLINUX_RELEASE_BOARD=beaglebone" > /etc/lsb-release
+		echo "SLINUX_DEVSERVER=http://bz:8080" >> /etc/lsb-release
+		echo "SEEED_RELEASE=v1-${time}" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_BUILD_NUMBER=11238" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_BRANCH_NUMBER=0" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_CHROME_MILESTONE=72" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_PATCH_NUMBER=v1-${time}" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_TRACK=developer-build" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_DESCRIPTION=v1-${time} (Developer Build - baozhu) developer-build beaglebone" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_NAME=Slinux OS" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_BUILD_TYPE=Developer Build - baozhu" >> /etc/lsb-release
+		echo "SLINUX_RELEASE_VERSION=v1-${time}" >> /etc/lsb-release
+		echo "SLINUX_AUSERVER=http://bz:8080/update" >> /etc/lsb-release
+
+
+		wget https://raw.githubusercontent.com/baorepo/update_engine/dev/UpdateEngine.conf -O /etc/dbus-1/system.d/UpdateEngine.conf
+		wget https://raw.githubusercontent.com/baorepo/update_engine/dev/update_engine.conf -O /etc/update_engine.conf
+		
+	}
 
 	systemd_tweaks () {
 		echo "Log: (chroot): systemd_tweaks"
@@ -1094,6 +1141,7 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 	if [ -f /etc/default/grub ] ; then
 		grub_tweaks
 	fi
+	read_only_fs
 
 	rm -f /chroot_script.sh || true
 __EOF__
@@ -1379,7 +1427,8 @@ chroot_umount
 
 if [ "x${chroot_COPY_SETUP_SDCARD}" = "xenable" ] ; then
 	echo "Log: copying setup_sdcard.sh related files"
-	sudo cp "${DIR}/tools/setup_sdcard.sh" "${DIR}/deploy/${export_filename}/"
+	sudo cp "${DIR}/tools/setup_ab_image.sh" "${DIR}/deploy/${export_filename}/"
+	sudo cp "${DIR}/tools/base_image.img.tar.bz2" "${DIR}/deploy/${export_filename}/"
 	sudo mkdir -p "${DIR}/deploy/${export_filename}/hwpack/"
 	sudo cp "${DIR}"/tools/hwpack/*.conf "${DIR}/deploy/${export_filename}/hwpack/"
 
