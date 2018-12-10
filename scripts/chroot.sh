@@ -996,7 +996,9 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 
 		wget https://raw.githubusercontent.com/baorepo/update_engine/dev/UpdateEngine.conf -O /etc/dbus-1/system.d/UpdateEngine.conf
 		wget https://raw.githubusercontent.com/baorepo/update_engine/dev/update_engine.conf -O /etc/update_engine.conf
-		
+		wget https://raw.githubusercontent.com/baorepo/update_engine/dev/scripts/postinst -O /postinst
+		chmod +x /postinst
+		cat /postinst
 	}
 
 	systemd_tweaks () {
@@ -1427,6 +1429,7 @@ chroot_umount
 
 if [ "x${chroot_COPY_SETUP_SDCARD}" = "xenable" ] ; then
 	echo "Log: copying setup_sdcard.sh related files"
+	sudo cp "${DIR}/tools/setup_sdcard.sh" "${DIR}/deploy/${export_filename}/"
 	sudo cp "${DIR}/tools/setup_ab_image.sh" "${DIR}/deploy/${export_filename}/"
 	sudo cp "${DIR}/tools/base_image.img.tar.bz2" "${DIR}/deploy/${export_filename}/"
 	sudo mkdir -p "${DIR}/deploy/${export_filename}/hwpack/"

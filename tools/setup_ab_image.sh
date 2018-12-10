@@ -1084,9 +1084,9 @@ populate_rootfs () {
 	cp -v ${TEMPDIR}/dl/bootA.scr ${TEMPDIR}/disk/boot/bootA.scr
 	cp -v ${TEMPDIR}/dl/bootB.scr ${TEMPDIR}/disk/boot/bootB.scr
 
-	${dl_quiet} --directory-prefix="${TEMPDIR}/dl/" http://192.168.4.48/BBG/clang+llvm-7.0.0-armv7a-linux-gnueabihf.tar.xz
-	tar xf ${TEMPDIR}/dl/clang+llvm-7.0.0-armv7a-linux-gnueabihf.tar.xz -C ${TEMPDIR}/disk/home/debian
-	git clone https://github.com/baorepo/update_engine ${TEMPDIR}/disk/home/debian/update_engine 
+	#${dl_quiet} --directory-prefix="${TEMPDIR}/dl/" http://192.168.4.48/BBG/clang+llvm-7.0.0-armv7a-linux-gnueabihf.tar.xz
+	#tar xf ${TEMPDIR}/dl/clang+llvm-7.0.0-armv7a-linux-gnueabihf.tar.xz -C ${TEMPDIR}/disk/home/debian
+	#git clone https://github.com/baorepo/update_engine ${TEMPDIR}/disk/home/debian/update_engine 
 	sudo chown -R 1000:1000 ${TEMPDIR}/disk/home/debian
 	cd ${TEMPDIR}/disk/
 	sync
