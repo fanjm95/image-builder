@@ -28,6 +28,7 @@ OIB_DIR="$( cd "$(dirname "$0")" ; pwd -P )"
 DIR="$PWD"
 mkdir -p ${DIR}/ignore
 
+export apt_proxy=192.168.4.48:3142/
 
 if [ -f ${DIR}/.project ] ; then
 	. ${DIR}/.project

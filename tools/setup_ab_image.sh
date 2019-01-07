@@ -713,7 +713,7 @@ populate_rootfs () {
 			unset use_pru_uio
 			if [ "x${uboot_pru_rproc_44ti}" = "xenable" ] ; then
 				echo "###pru_rproc (4.4.x-ti kernel)" >> ${wfile}
-				echo "uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-4-TI-00A0.dtbo" >> ${wfile}
+				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-4-TI-00A0.dtbo" >> ${wfile}
 				echo "###pru_rproc (4.14.x-ti kernel)" >> ${wfile}
 				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo" >> ${wfile}
 				echo "###pru_uio (4.4.x-ti, 4.14.x-ti & mainline/bone kernel)" >> ${wfile}
@@ -724,7 +724,8 @@ populate_rootfs () {
 				echo "###pru_rproc (4.4.x-ti kernel)" >> ${wfile}
 				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-4-TI-00A0.dtbo" >> ${wfile}
 				echo "###pru_rproc (4.14.x-ti kernel)" >> ${wfile}
-				echo "uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo" >> ${wfile}
+				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo" >> ${wfile}
+                ##echo "uboot_overlay_pru=/lib/firmware/univ-bbgw-EW-00A0.dtbo" >> ${wfile}
 				echo "###pru_uio (4.4.x-ti, 4.14.x-ti & mainline/bone kernel)" >> ${wfile}
 				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo" >> ${wfile}
 				use_pru_uio="blocked"
@@ -735,7 +736,8 @@ populate_rootfs () {
 				echo "###pru_rproc (4.14.x-ti kernel)" >> ${wfile}
 				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo" >> ${wfile}
 				echo "###pru_uio (4.4.x-ti, 4.14.x-ti & mainline/bone kernel)" >> ${wfile}
-				echo "uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo" >> ${wfile}
+				echo "#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO-00A0.dtbo" >> ${wfile}
+                ##echo "uboot_overlay_pru=/lib/firmware/univ-bbgw-EW-00A0.dtbo" >> ${wfile}
 			fi
 			echo "###" >> ${wfile}
 			echo "###Cape Universal Enable" >> ${wfile}
@@ -1087,7 +1089,7 @@ populate_rootfs () {
 	#${dl_quiet} --directory-prefix="${TEMPDIR}/dl/" http://192.168.4.48/BBG/clang+llvm-7.0.0-armv7a-linux-gnueabihf.tar.xz
 	#tar xf ${TEMPDIR}/dl/clang+llvm-7.0.0-armv7a-linux-gnueabihf.tar.xz -C ${TEMPDIR}/disk/home/debian
 	#git clone https://github.com/baorepo/update_engine ${TEMPDIR}/disk/home/debian/update_engine 
-	sudo chown -R 1000:1000 ${TEMPDIR}/disk/home/debian
+	sudo chown -R 1000:1000 ${TEMPDIR}/disk/home/seeed
 	cd ${TEMPDIR}/disk/
 	sync
 	sync

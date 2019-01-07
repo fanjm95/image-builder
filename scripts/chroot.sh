@@ -1286,6 +1286,29 @@ if [ -n "${chroot_script}" -a -r "${DIR}/target/chroot/${chroot_script}" ] ; the
 	fi
 fi
 
+lora_related_file () {
+    echo "clone lora related file."
+    git_clone_address="https://gitee.com/FanJunmin/deploy.git"
+    git_project_name="deploy"
+
+    if [ ! -f ${DIR}/git/${git_project_name}/.git/config ] ; then
+		git clone ${git_clone_address} ${DIR}/git/${git_project_name} --depth=1
+	fi
+
+    if [ -f ${DIR}/git/${git_project_name}/.git/config ] ; then
+		cd ${DIR}/git/${git_project_name}/
+		git pull --rebase || true
+
+        echo "start copy lora file."
+        sudo cp config-pin  "${tempdir}/usr/bin/"
+        sudo tar -xf ./lora-pkg*.tar.bz2 -C "${tempdir}/"
+
+        cd -
+	fi
+}
+
+lora_related_file
+
 ##Building final tar file...
 
 if [ -d "${DIR}/deploy/${export_filename}/" ] ; then
@@ -1305,6 +1328,27 @@ cat > "${DIR}/cleanup_script.sh" <<-__EOF__
 	#!/bin/sh -e
 	export LC_ALL=C
 	export DEBIAN_FRONTEND=noninteractive
+
+    ## lora related service
+    if [ -f /lib/systemd/system/gateway_update.service ] ; then
+		systemctl enable gateway_update.service
+	fi
+
+    if [ -f /lib/systemd/system/gateway_web.service ] ; then
+		systemctl enable gateway_web.service
+	fi
+
+    if [ -f /lib/systemd/system/gateway_log_upload.service ] ; then
+		systemctl enable gateway_log_upload.service
+	fi
+
+    if [ -f /lib/systemd/system/gateway_lora.service ] ; then
+		systemctl enable gateway_lora.service
+	fi
+
+    if [ -f /lib/systemd/system/bb-wl18xx-wlan0.service ] ; then
+		systemctl disable bb-wl18xx-wlan0.service
+	fi
 
 	#set distro:
 	. /etc/rcn-ee.conf
