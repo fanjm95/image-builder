@@ -911,7 +911,7 @@ populate_rootfs () {
 		# fi
 
 		
-		echo "/dev/mmcblk0p1 /mnt/stateful_partition ext4 defaults 0 2" >> ${wfile}
+		echo "/dev/mmcblk1p1 /mnt/stateful_partition ext4 defaults 0 2" >> ${wfile}
 		echo "/mnt/stateful_partition/home /home none defaults,bind 0 0" >> ${wfile}
 		echo "/mnt/stateful_partition/var /var none defaults,bind 0 0" >> ${wfile}
 		echo "/mnt/stateful_partition/local /usr/local none defaults,bind 0 0" >> ${wfile}

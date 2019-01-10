@@ -960,7 +960,7 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 		if [ -f /etc/fstab ] ; then
 			echo "------------------------/etc/fstab---------------------------"
 			echo "# UNCONFIGURED FSTAB FOR BASE SYSTEM" > /etc/fstab
-			echo "/dev/mmcblk0p1 /mnt/stateful_partition ext4 defaults 0 2" >> /etc/fstab
+			echo "/dev/mmcblk1p1 /mnt/stateful_partition ext4 defaults 0 2" >> /etc/fstab
 			echo "/mnt/stateful_partition/home /home none defaults,bind 0 0" >> /etc/fstab
 			echo "/mnt/stateful_partition/var /var none defaults,bind 0 0" >> /etc/fstab
 			echo "/mnt/stateful_partition/local /usr/local none defaults,bind 0 0" >> /etc/fstab
@@ -982,6 +982,9 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 		echo "SLINUX_RELEASE_BOARD=beaglebone" > /etc/lsb-release
 		echo "SLINUX_DEVSERVER=http://bz:8080" >> /etc/lsb-release
 		echo "SEEED_RELEASE=v1-${time}" >> /etc/lsb-release
+        echo "FOTA_VID=1 >> /etc/lsb-release
+        echo "FOTA_PID=1 >> /etc/lsb-release
+        echo "FOTA_BUILD_VERSION=1 >> /etc/lsb-release
 		echo "SLINUX_RELEASE_BUILD_NUMBER=11238" >> /etc/lsb-release
 		echo "SLINUX_RELEASE_BRANCH_NUMBER=0" >> /etc/lsb-release
 		echo "SLINUX_RELEASE_CHROME_MILESTONE=72" >> /etc/lsb-release
@@ -1348,6 +1351,10 @@ cat > "${DIR}/cleanup_script.sh" <<-__EOF__
 
     if [ -f /lib/systemd/system/bb-wl18xx-wlan0.service ] ; then
 		systemctl disable bb-wl18xx-wlan0.service
+	fi
+
+    if [ -f /lib/systemd/system/update_engine.service ] ; then
+		systemctl enable update_engine.service
 	fi
 
 	#set distro:
