@@ -983,7 +983,7 @@ cat > "${DIR}/chroot_script.sh" <<-__EOF__
 		echo "SLINUX_DEVSERVER=http://bz:8080" >> /etc/lsb-release
 		echo "SEEED_RELEASE=v1-${time}" >> /etc/lsb-release
         echo "FOTA_VID=1" >> /etc/lsb-release
-        echo "FOTA_PID=1" >> /etc/lsb-release
+        echo "FOTA_PID=23" >> /etc/lsb-release
         echo "FOTA_BUILD_VERSION=1" >> /etc/lsb-release
 		echo "SLINUX_RELEASE_BUILD_NUMBER=11238" >> /etc/lsb-release
 		echo "SLINUX_RELEASE_BRANCH_NUMBER=0" >> /etc/lsb-release
